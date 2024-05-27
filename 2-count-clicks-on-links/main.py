@@ -20,13 +20,19 @@ def shorten_link(token, link):
     print(response)
     print(response.text)
     print(response.json())
-    error = ''
+    api_error_msg = ''
     short_link = ''
     if response.ok and response.json().get("response"):
         short_link = response.json().get("response").get("short_url")
     if response.ok and response.json().get("error"):
-        error = response.json().get("error").get("error_msg")
-    return error, short_link
+        api_error_msg = response.json().get("error").get("error_msg")
+    return api_error_msg, short_link
+
+
+def count_clicks(token, link):
+
+    clicks_count = 0
+    return clicks_count
 
 
 def main():
@@ -36,17 +42,14 @@ def main():
     #link = 'dvmn.org/modules'
     link = input()
 
-    error = ''
-    short_link = ''
-
     try:
-        error, short_link = shorten_link(VK_SERVICE_TOKEN, link)
+        api_error_msg_shorten_link, short_link = shorten_link(VK_SERVICE_TOKEN, link)
     except requests.exceptions.HTTPError as e:
-        print(f'Error: {e}')
+        print(f'Exception error: {e}')
         return
 
-    if error:
-        print('API error:', error)
+    if api_error_msg_shorten_link:
+        print('API error message for shorten link operation:', api_error_msg_shorten_link)
         return
 
     print('Сокращенная ссылка:', short_link)

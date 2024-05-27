@@ -7,7 +7,9 @@ def shorten_link(token, url):
     api_url_template = 'https://api.vk.ru/method/utils.getShortLink'
     headers = {'Authorization': f'Bearer {token}'}
     params = {
+        # VK API version
         'v': '5.236',
+        # URL to be shortened
         'url': url,
         'private': 0
     }
@@ -28,7 +30,8 @@ def main():
     load_dotenv()
     VK_SERVICE_TOKEN = os.environ.get('VK_SERVICE_TOKEN')
 
-    url = 'dvmn.org/modules'
+    #url = 'dvmn.org/modules'
+    url = input()
 
     short_url = shorten_link(VK_SERVICE_TOKEN, url)
     print('Сокращенная ссылка: ', short_url)

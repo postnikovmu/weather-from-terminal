@@ -31,7 +31,7 @@ def main():
     url = 'dvmn.org/modules'
 
     short_url = shorten_link(VK_SERVICE_TOKEN, url)
-    print("short_url:", short_url)
+    print('Сокращенная ссылка: ', short_url)
 
 
 if __name__ == '__main__':

@@ -4,6 +4,35 @@ from dotenv import load_dotenv
 from urllib.parse import urlparse
 
 
+def is_shorten_link(token, link):
+
+    url_template = 'https://api.vk.ru/method/utils.checkLink'
+    headers = {'Authorization': f'Bearer {token}'}
+    params = {
+        # VK API version
+        'v': '5.236',
+        # URL to be shortened
+        'url': link,
+    }
+    url = url_template
+    response = requests.get(url, headers=headers, params=params)
+    response.raise_for_status()
+
+    print(response)
+    print(response.text)
+    print(response.json())
+    result_link = ''
+    api_error_msg = ''
+    if response.ok and response.json().get("response"):
+        result_link = response.json().get("response").get("link")
+    if response.ok and response.json().get("error"):
+        api_error_msg = response.json().get("error").get("error_msg")
+    print(result_link)
+    if link in result_link:
+        return api_error_msg, False
+    return api_error_msg, True
+
+
 def shorten_link(token, link):
     url_template = 'https://api.vk.ru/method/utils.getShortLink'
     headers = {'Authorization': f'Bearer {token}'}
@@ -69,23 +98,27 @@ def main():
     #link = 'dvmn.org/modules'
     link = input()
 
+    short_link = ''
+    clicks_count = 0
+
     try:
-        api_error_msg_shorten_link, short_link = shorten_link(VK_SERVICE_TOKEN, link)
-        api_error_msg_count_clicks, clicks_count = count_clicks(VK_SERVICE_TOKEN, short_link)
+        api_error_msg, is_shorten_link_flag = is_shorten_link(VK_SERVICE_TOKEN, link)
+        if not api_error_msg and not is_shorten_link_flag:
+            api_error_msg, short_link = shorten_link(VK_SERVICE_TOKEN, link)
+        if not api_error_msg and is_shorten_link_flag:
+            api_error_msg, clicks_count = count_clicks(VK_SERVICE_TOKEN, link)
     except requests.exceptions.HTTPError as e:
         print(f'Exception error: {e}')
         return
 
-    if api_error_msg_shorten_link:
-        print('API error message for shorten link operation:', api_error_msg_shorten_link)
+    if api_error_msg:
+        print('VK API error message:', api_error_msg)
         return
 
-    if api_error_msg_count_clicks:
-        print('API error message for count clicks:', api_error_msg_count_clicks)
-        return
-
-    print('Сокращенная ссылка:', short_link)
-    print('Количество кликов по ссылке:', clicks_count)
+    if short_link:
+        print('Сокращенная ссылка:', short_link)
+    if clicks_count:
+        print('Количество кликов по ссылке:', clicks_count)
 
 
 if __name__ == '__main__':

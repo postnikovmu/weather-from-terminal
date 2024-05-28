@@ -43,6 +43,7 @@ def count_clicks(token, link):
         'v': '5.236',
         # Shortened link (part of the URL after “vk.cc/”)
         'key': key,
+        'interval': 'forever',
         'extended': 0
     }
     url = url_template

@@ -27,6 +27,7 @@ def is_shorten_link(token, link):
 
 
 def shorten_link(token, link):
+
     url = 'https://api.vk.ru/method/utils.getShortLink'
     headers = {'Authorization': f'Bearer {token}'}
     params = {
@@ -72,6 +73,7 @@ def count_clicks(token, link):
 
 
 def main():
+
     load_dotenv()
     VK_SERVICE_TOKEN = os.environ.get('VK_SERVICE_TOKEN')
 
